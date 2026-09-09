@@ -6,8 +6,6 @@ export type WidgetType =
   | "notes"
   | "information"
   | "tasks"
-  /** Dashboard widget summarizing call logs by property/day/hashtag. */
-  | "stats"
   /** Independent sticky note extracted from the main Notes widget. */
   | "sticky";
 
@@ -130,9 +128,7 @@ export type WidgetContent =
   | { kind: "contacts"; items: ContactItem[] }
   | { kind: "tasks"; items: TaskItem[] }
   | { kind: "information"; items: InformationItem[] }
-  | { kind: "notes"; items: NoteRefItem[] }
-  /** Derives its display entirely from `callHistory` — carries no items. */
-  | { kind: "stats" };
+  | { kind: "notes"; items: NoteRefItem[] };
 
 export interface Widget {
   id: string;
@@ -166,7 +162,7 @@ export interface NoteVersion {
 /**
  * A single completed call, logged when "End call" is pressed in the Notes
  * tool. Kept strictly separate from the general Notes widget/history —
- * powers the Call History side panel and the Daily Statistics tool.
+ * powers the Call History side panel in the Notes tool.
  */
 export interface CallLogEntry {
   id: string;

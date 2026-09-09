@@ -42,7 +42,6 @@ const DEFAULT_BY_TYPE: Record<WidgetType, WidgetIconName> = {
   notes: "note",
   information: "info",
   tasks: "check",
-  stats: "chart",
   sticky: "bookmark",
 };
 

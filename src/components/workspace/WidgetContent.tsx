@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   AlarmClock,
@@ -35,8 +35,6 @@ import { cn } from "@/lib/utils";
 import { sanitizeHtml } from "@/lib/sanitize-html";
 import { highlightHtml, highlightText, matchesQuery } from "@/lib/highlight";
 import { RECURRENCE_LABELS, WEEKDAY_LABELS, isTaskAlertActive } from "@/lib/task-schedule";
-import { CALL_HASHTAGS, PROPERTY_STYLES } from "@/lib/property-codes";
-import { todayISO, localISODate } from "@/lib/quote-model";
 import { DEFAULT_NOTIFY_MINUTES, NOTIFY_OPTIONS, isReminderAlertActive } from "@/lib/reminder-alert";
 import {
   Select,
@@ -1195,89 +1193,6 @@ function InformationContent({ widget }: { widget: Widget }) {
   );
 }
 
-/**
- * DAILY STATISTICS renders a compact table of call counts — properties
- * (AR/ER/RI) as rows, action hashtags as columns — for a single day, sourced
- * live from the isolated `callHistory` log (never from the Notes widget).
- */
-function StatsContent({
-  widget,
-  filtersOpen,
-}: {
-  widget: Widget;
-  filtersOpen: boolean;
-}) {
-  const { callHistory } = useWorkspace();
-  const [day, setDay] = useState(todayISO());
-  if (widget.content.kind !== "stats") return null;
-
-
-  // Compare on the LOCAL calendar date of each call, not the raw UTC prefix of
-  // `savedAtISO`. `day` comes from `todayISO()` (local), so slicing the UTC
-  // string would drop evening calls in behind-UTC timezones (e.g. Panama).
-  const dayEntries = useMemo(
-    () => callHistory.filter((c) => localISODate(new Date(c.savedAtISO)) === day),
-    [callHistory, day],
-  );
-
-  const rows = (["AR", "ER", "RI"] as const).map((code) => {
-    const rowEntries = dayEntries.filter((c) => c.property === code);
-    const cells = CALL_HASHTAGS.map(
-      (tag) => rowEntries.filter((c) => c.hashtags.includes(tag)).length,
-    );
-    return { code, cells, total: rowEntries.length };
-  });
-
-  return (
-    <div className="flex h-full min-h-0 flex-col gap-3" onClick={stop}>
-      {filtersOpen && (
-        <div className="flex items-center justify-between gap-2">
-          <DateField
-            value={day}
-            onChange={setDay}
-            size="sm"
-            aria-label="Statistics day"
-            className="w-auto"
-          />
-          <span className="shrink-0 rounded-full border border-border bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
-            Total calls: <span className="font-mono text-foreground">{dayEntries.length}</span>
-          </span>
-        </div>
-      )}
-
-      {callHistory.length === 0 ? (
-
-        <p className="text-[12px] text-muted-foreground">
-          Calls finished from the Notes tool will appear here.
-        </p>
-      ) : (
-        <div className="hover-scroll flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto">
-          {rows.map((row) => {
-            const style = PROPERTY_STYLES[row.code];
-            return (
-              <div
-                key={row.code}
-                className="flex items-center justify-between gap-2 rounded-xl border border-border/60 p-2.5"
-                style={{ backgroundColor: `color-mix(in srgb, ${style.hex} 14%, var(--surface-2))` }}
-              >
-                <span
-                  className="min-w-0 truncate rounded-full px-2 py-0.5 text-[10.5px] font-semibold"
-                  style={{ backgroundColor: style.hex, color: style.fg }}
-                >
-                  {style.label}
-                </span>
-                <span className="shrink-0 font-mono text-[11px] font-semibold text-foreground">
-                  {row.total}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export function WidgetContent({
   widget,
   filtersOpen = false,
@@ -1319,13 +1234,12 @@ export function WidgetContent({
       />
     );
   if (c.kind === "information") return <InformationContent widget={widget} />;
-  if (c.kind === "stats") return <StatsContent widget={widget} filtersOpen={filtersOpen} />;
 
   return <NotesContent widget={widget} />;
 }
 
-/** Widget kinds whose header icon toggles extra controls (filters or stats controls). */
+/** Widget kinds whose header icon toggles extra controls (filters). */
 export function widgetSupportsHeaderToggle(kind: Widget["content"]["kind"]): boolean {
-  return kind === "reminders" || kind === "tasks" || kind === "contacts" || kind === "stats";
+  return kind === "reminders" || kind === "tasks" || kind === "contacts";
 }
 

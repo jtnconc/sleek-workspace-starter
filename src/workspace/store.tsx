@@ -148,17 +148,6 @@ const DEFAULT_WIDGETS: Widget[] = [
       ],
     },
   },
-  {
-    id: "w-stats",
-    type: "stats",
-    title: "Daily Statistics",
-    position: 5,
-    width: 2,
-    height: 1,
-    display: "minimized",
-    accent: "blue",
-    content: { kind: "stats" },
-  },
 ];
 
 const DEFAULT_QUOTE = (): QuoteDoc => {
@@ -220,7 +209,7 @@ interface WorkspaceState {
   noteText: string;
   noteHistory: NoteVersion[];
   /** Completed calls, isolated from general notes. Powers the Call History
-   * side panel and the Daily Statistics tool. */
+   * side panel in the Notes tool. */
   callHistory: CallLogEntry[];
   quote: QuoteDoc;
   quoteHistory: QuoteDoc[];
@@ -354,10 +343,14 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const saved = JSON.parse(raw) as Partial<WorkspaceState>;
-      // Sessions saved before a new widget type (e.g. "stats") existed won't
-      // have it in their stored widget list — append any missing defaults so
-      // returning users pick up newly introduced dashboard widgets.
-      const savedWidgets = saved.widgets ?? DEFAULT_WIDGETS;
+      // Sessions saved before a new widget type existed won't have it in their
+      // stored widget list — append any missing defaults so returning users
+      // pick up newly introduced dashboard widgets.
+      // Widgets whose type no longer exists (e.g. the removed "stats" widget)
+      // are dropped from old saved sessions so they never render as broken cards.
+      const savedWidgets = (saved.widgets ?? DEFAULT_WIDGETS).filter(
+        (w) => w.content.kind !== ("stats" as string) && w.type !== ("stats" as string),
+      );
       const missingDefaults = DEFAULT_WIDGETS.filter(
         (d) => !savedWidgets.some((w) => w.type === d.type),
       ).map((d, i) => ({ ...d, position: savedWidgets.length + i }));
