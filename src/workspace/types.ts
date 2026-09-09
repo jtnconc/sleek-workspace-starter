@@ -6,8 +6,6 @@ export type WidgetType =
   | "notes"
   | "information"
   | "tasks"
-  /** Dashboard widget summarizing call logs by property/day/hashtag. */
-  | "stats"
   /** Independent sticky note extracted from the main Notes widget. */
   | "sticky";
 
@@ -130,9 +128,7 @@ export type WidgetContent =
   | { kind: "contacts"; items: ContactItem[] }
   | { kind: "tasks"; items: TaskItem[] }
   | { kind: "information"; items: InformationItem[] }
-  | { kind: "notes"; items: NoteRefItem[] }
-  /** Derives its display entirely from `callHistory` — carries no items. */
-  | { kind: "stats" };
+  | { kind: "notes"; items: NoteRefItem[] };
 
 export interface Widget {
   id: string;
