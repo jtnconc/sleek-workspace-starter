@@ -46,4 +46,6 @@ const DEFAULT_BY_TYPE: Record<WidgetType, WidgetIconName> = {
 };
 
 export const widgetIcon = (type: WidgetType, icon?: WidgetIconName) =>
-  WIDGET_ICONS[icon ?? DEFAULT_BY_TYPE[type]] ?? WIDGET_ICONS[DEFAULT_BY_TYPE[type]];
+  WIDGET_ICONS[icon ?? DEFAULT_BY_TYPE[type]] ??
+  WIDGET_ICONS[DEFAULT_BY_TYPE[type]] ??
+  Info;
