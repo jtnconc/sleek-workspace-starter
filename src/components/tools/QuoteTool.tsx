@@ -189,13 +189,11 @@ function RoomTypesManager({
 interface QuoteToolProps {
   showPreview?: boolean;
   showHistory?: boolean;
-  onClosePreview?: () => void;
 }
 
 export function QuoteTool({
   showPreview = false,
   showHistory = false,
-  onClosePreview,
 }: QuoteToolProps) {
   const {
     quote,
@@ -965,17 +963,6 @@ const toggleItem = (itemId: string) => {
             </article>
           </div>
         </div>
-
-        {showPreview && (
-          <button
-            type="button"
-            onClick={() => onClosePreview?.()}
-            className="flex shrink-0 items-center justify-between rounded-full bg-surface-2 px-4 py-2.5 text-left transition-colors hover:bg-secondary"
-          >
-            <span className="text-[13px] font-semibold">{lang === "es" ? "Cotizador" : "Quote form"}</span>
-            <ChevronDown className="size-4 text-muted-foreground" />
-          </button>
-        )}
 
         <AnimatePresence initial={false}>
           {showPreview && pdfBlobUrl && (
