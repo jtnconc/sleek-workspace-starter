@@ -162,7 +162,7 @@ export interface NoteVersion {
 /**
  * A single completed call, logged when "End call" is pressed in the Notes
  * tool. Kept strictly separate from the general Notes widget/history —
- * powers the Call History side panel and the Daily Statistics tool.
+ * powers the Call History side panel in the Notes tool.
  */
 export interface CallLogEntry {
   id: string;

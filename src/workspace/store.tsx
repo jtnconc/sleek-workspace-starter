@@ -209,7 +209,7 @@ interface WorkspaceState {
   noteText: string;
   noteHistory: NoteVersion[];
   /** Completed calls, isolated from general notes. Powers the Call History
-   * side panel and the Daily Statistics tool. */
+   * side panel in the Notes tool. */
   callHistory: CallLogEntry[];
   quote: QuoteDoc;
   quoteHistory: QuoteDoc[];
