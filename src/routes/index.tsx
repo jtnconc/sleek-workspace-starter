@@ -1,24 +1,107 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { WorkspaceProvider, useWorkspace } from "@/workspace/store";
+import { AuthProvider } from "@/auth/store";
+import { AuthGuard } from "@/components/auth/AuthGuard";
+import { WorkspaceHeader } from "@/components/workspace/WorkspaceHeader";
+import { WidgetGrid } from "@/components/workspace/WidgetGrid";
+import { NotesTool } from "@/components/tools/NotesTool";
+import { RatesTool } from "@/components/tools/RatesTool";
+import { QuoteTool } from "@/components/tools/QuoteTool";
+import { cn } from "@/lib/utils";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Reservation Workspace" },
+      {
+        name: "description",
+        content:
+          "A calm digital desk for hotel reservation agents: intelligent notes, senior rate calculator and PDF quotations in one transforming workspace.",
+      },
+      { property: "og:title", content: "Reservation Workspace" },
+      {
+        property: "og:description",
+        content:
+          "Write, recognize, save and quote — one workspace that transforms around the reservation you are working on.",
+      },
+    ],
+  }),
+  component: WorkspacePage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function WorkspacePage() {
+  const [quotePreview, setQuotePreview] = useState(false);
+  const [quoteHistory, setQuoteHistory] = useState(false);
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <AuthProvider>
+      <AuthGuard>
+        <WorkspaceProvider>
+          <div className="flex min-h-screen w-full flex-col bg-background">
+            <WorkspaceHeader
+              quotePreview={quotePreview}
+              onToggleQuotePreview={() => setQuotePreview((v) => !v)}
+              quoteHistoryOpen={quoteHistory}
+              onToggleQuoteHistory={() => setQuoteHistory((v) => !v)}
+            />
+            <main className="mx-auto flex w-full max-w-[1240px] min-h-0 flex-1 flex-col px-5 pb-3 pt-0">
+              <Workspace
+                quotePreview={quotePreview}
+                quoteHistory={quoteHistory}
+                onCloseQuotePreview={() => setQuotePreview(false)}
+              />
+            </main>
+          </div>
+        </WorkspaceProvider>
+      </AuthGuard>
+    </AuthProvider>
+  );
+}
+
+function Workspace({
+  quotePreview,
+  quoteHistory,
+  onCloseQuotePreview,
+}: {
+  quotePreview: boolean;
+  quoteHistory: boolean;
+  onCloseQuotePreview: () => void;
+}) {
+  const { mode, activeTool } = useWorkspace();
+  const toolMode = mode === "tool";
+
+  return (
+    <div className="flex min-h-0 w-full flex-1 flex-col gap-2">
+      {/* Tool area — expands in tool mode, retracts fully in widget mode.
+          flex-1 + min-h-0 (rather than a fixed min-h) lets this card size
+          itself to exactly whatever space remains above the pill nav, so it
+          shrinks smoothly on resize instead of forcing the nav off-screen. */}
+      <section
+        className={cn(
+          "desk-panel min-w-0 overflow-hidden transition-all duration-500 ease-[var(--ease-desk)]",
+          toolMode
+            ? "flex min-h-0 flex-1 flex-col p-4 pb-3 opacity-100 sm:p-6 sm:pb-4"
+            : "pointer-events-none max-h-0 border-0 p-0 opacity-0 shadow-none",
+        )}
+        aria-hidden={!toolMode}
+      >
+        {toolMode && (
+          <div className="flex min-h-0 flex-1 flex-col">
+            {activeTool === "notes" && <NotesTool />}
+            {activeTool === "rates" && <RatesTool />}
+            {activeTool === "quote" && (
+              <QuoteTool
+                showPreview={quotePreview}
+                showHistory={quoteHistory}
+                onClosePreview={onCloseQuotePreview}
+              />
+            )}
+          </div>
+        )}
+      </section>
+
+      <WidgetGrid />
     </div>
   );
 }
