@@ -7,6 +7,7 @@ import {
   itemNights,
   lineSubtotal,
   quoteFileBaseName,
+  quoteNumber,
   quoteTotals,
 } from "./quote-model";
 
@@ -298,8 +299,14 @@ export function buildQuotePdf(quote: QuoteDoc, hotel: HotelTemplate, logoImage?:
     y += 12;
   }
 
-  // Internal quote code is intentionally omitted from the exported PDF —
-  // it stays visible only in the app workspace and history sidebar.
+  // Quote code printed faintly in the bottom-right corner of the page.
+  const H = doc.internal.pageSize.getHeight();
+  doc.saveGraphicsState();
+  doc.setGState(new (doc as any).GState({ opacity: 0.15 }));
+  doc.setFont("helvetica", "normal").setFontSize(8).setTextColor(60, 64, 74);
+  const codeLabel = quoteNumber(quote);
+  doc.text(codeLabel, W - M, H - 24, { align: "right" });
+  doc.restoreGraphicsState();
 
   return doc;
 }

@@ -230,9 +230,11 @@ export function hotelPropertyCode(hotelId: string) {
   );
 }
 
-/** Quotation number printed on the PDF, e.g. "AR-1A2B3C". */
+/** Quotation number shown in the app and on the PDF, e.g. "AR-482913". */
 export function quoteNumber(quote: QuoteDoc) {
-  return `${hotelPropertyCode(quote.hotelId)}-${quote.id.slice(-6).toUpperCase()}`;
+  const alphanumeric = quote.id.replace(/[^a-z0-9]/gi, "");
+  const numeric = parseInt(alphanumeric, 36).toString().slice(-6).padStart(6, "0");
+  return `${hotelPropertyCode(quote.hotelId)}-${numeric}`;
 }
 
 /**
