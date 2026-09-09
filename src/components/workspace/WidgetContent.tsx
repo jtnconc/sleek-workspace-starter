@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   AlarmClock,
@@ -35,8 +35,6 @@ import { cn } from "@/lib/utils";
 import { sanitizeHtml } from "@/lib/sanitize-html";
 import { highlightHtml, highlightText, matchesQuery } from "@/lib/highlight";
 import { RECURRENCE_LABELS, WEEKDAY_LABELS, isTaskAlertActive } from "@/lib/task-schedule";
-import { CALL_HASHTAGS, PROPERTY_STYLES } from "@/lib/property-codes";
-import { todayISO, localISODate } from "@/lib/quote-model";
 import { DEFAULT_NOTIFY_MINUTES, NOTIFY_OPTIONS, isReminderAlertActive } from "@/lib/reminder-alert";
 import {
   Select,

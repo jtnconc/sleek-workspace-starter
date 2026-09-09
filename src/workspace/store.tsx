@@ -343,9 +343,9 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const saved = JSON.parse(raw) as Partial<WorkspaceState>;
-      // Sessions saved before a new widget type (e.g. "stats") existed won't
-      // have it in their stored widget list — append any missing defaults so
-      // returning users pick up newly introduced dashboard widgets.
+      // Sessions saved before a new widget type existed won't have it in their
+      // stored widget list — append any missing defaults so returning users
+      // pick up newly introduced dashboard widgets.
       // Widgets whose type no longer exists (e.g. the removed "stats" widget)
       // are dropped from old saved sessions so they never render as broken cards.
       const savedWidgets = (saved.widgets ?? DEFAULT_WIDGETS).filter(
