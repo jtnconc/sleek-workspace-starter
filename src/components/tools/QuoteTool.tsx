@@ -964,7 +964,7 @@ const toggleItem = (itemId: string) => {
           </div>
         </div>
 
-        <AnimatePresence initial={false}>
+        <AnimatePresence initial={false} mode="popLayout">
           {showPreview && pdfBlobUrl && (
             <motion.div
               key="quote-preview"
