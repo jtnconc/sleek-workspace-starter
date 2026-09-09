@@ -388,18 +388,12 @@ const toggleItem = (itemId: string) => {
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 lg:flex-row">
       <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 pr-1">
-        <AnimatePresence initial={false} mode="popLayout">
-          {!showPreview ? (
-            <motion.div
-              key="quote-form"
-              layout
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 40, mass: 0.9 }}
-              className="min-h-0 flex-1 overflow-y-auto"
-            >
-        <article className="min-w-0 rounded-2xl border border-border bg-surface p-4 sm:p-6">
+        <div
+          className="grid min-h-0 flex-1 transition-[grid-template-rows] duration-300 ease-out"
+          style={{ gridTemplateRows: showPreview ? "0fr" : "1fr" }}
+        >
+          <div className="min-h-0 overflow-hidden">
+            <article className="min-w-0 h-full overflow-y-auto rounded-2xl border border-border bg-surface p-4 sm:p-6">
           <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border pb-4">
             <div className="flex min-w-0 flex-wrap items-center gap-3">
               <div className="group relative size-10 shrink-0">
@@ -968,27 +962,20 @@ const toggleItem = (itemId: string) => {
               </div>
             </div>
           )}
-        </article>
-            </motion.div>
-          ) : (
-            <motion.button
-              key="quote-collapsed"
-              layout
-              type="button"
-              onClick={() => onClosePreview?.()}
-              initial={{ opacity: 0, y: -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ type: "spring", stiffness: 300, damping: 40, mass: 0.9 }}
-              className="relative flex shrink-0 items-center justify-center rounded-full bg-surface-2 px-4 py-2.5 text-center transition-colors hover:bg-secondary"
-            >
-              <span className="label-xs">
-                Quotation
-              </span>
-              <ChevronDown className="absolute right-4 size-4 text-muted-foreground" />
-            </motion.button>
-          )}
-        </AnimatePresence>
+            </article>
+          </div>
+        </div>
+
+        {showPreview && (
+          <button
+            type="button"
+            onClick={() => onClosePreview?.()}
+            className="flex shrink-0 items-center justify-between rounded-full bg-surface-2 px-4 py-2.5 text-left transition-colors hover:bg-secondary"
+          >
+            <span className="text-[13px] font-semibold">{lang === "es" ? "Cotizador" : "Quote form"}</span>
+            <ChevronDown className="size-4 text-muted-foreground" />
+          </button>
+        )}
 
         <AnimatePresence initial={false}>
           {showPreview && pdfBlobUrl && (
