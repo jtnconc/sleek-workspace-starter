@@ -396,7 +396,7 @@ const toggleItem = (itemId: string) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ type: "spring", stiffness: 340, damping: 38 }}
+              transition={{ type: "spring", stiffness: 300, damping: 40, mass: 0.9 }}
               className="min-h-0 flex-1 overflow-y-auto"
             >
         <article className="min-w-0 rounded-2xl border border-border bg-surface p-4 sm:p-6">
@@ -979,7 +979,7 @@ const toggleItem = (itemId: string) => {
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
-              transition={{ type: "spring", stiffness: 340, damping: 38 }}
+              transition={{ type: "spring", stiffness: 300, damping: 40, mass: 0.9 }}
               className="relative flex shrink-0 items-center justify-center rounded-full bg-surface-2 px-4 py-2.5 text-center transition-colors hover:bg-secondary"
             >
               <span className="label-xs">
@@ -998,7 +998,7 @@ const toggleItem = (itemId: string) => {
               initial={{ opacity: 0, scale: 0.985 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.985 }}
-              transition={{ type: "spring", stiffness: 340, damping: 38 }}
+              transition={{ type: "spring", stiffness: 300, damping: 40, mass: 0.9 }}
               className="min-h-0 flex-1 overflow-auto rounded-2xl border border-border bg-muted/30 p-4"
             >
               <ClientOnly fallback={<PdfSkeleton />}>
